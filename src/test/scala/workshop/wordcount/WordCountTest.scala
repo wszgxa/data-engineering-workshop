@@ -44,6 +44,7 @@ class WordCountTest extends DefaultFeatureSpecWithSpark {
         .foldRight(Set[String]())((file, lineSet) =>
           lineSet ++ FileUtils.readLines(file).asScala)
         .map(_.trim)
+
       val expectedLines = Set("worst,1",
         "times,2",
         "was,4",

@@ -32,11 +32,20 @@ object WordCount {
     spark.read
       .text(inputPath)  // Read file
       .as[String] // As a data set
+      .map(line => {
+        line.trim()
+            .replaceAll("\\,|\"|\\.|\\;", "")
+            .replaceAll("-+", " ")
+            .filter(item => item != "")
+      })
+      .flatMap(line => line.toLowerCase().split(" "))
+      .groupByKey(identity)
+      .count()
+      .sort($"value".asc)
       .write
       .option("quoteAll", false)
       .option("quote", " ")
       .csv(outputPath)
-
     log.info("Application Done: " + spark.sparkContext.appName)
   }
 }
